@@ -31,13 +31,6 @@ import './index.css';
     return null;
   }
   class Board extends React.Component {
-    constructor(props){
-        super(props);
-        this.state={
-            squares: Array(9).fill(null),
-            xIsNext:true,
-        };
-    }
 
     renderSquare(i) {
       return <Square 
@@ -92,6 +85,7 @@ import './index.css';
                 {
                     squares: squares,
                 }]),
+            stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
         });
     }
