@@ -108,7 +108,7 @@ import './index.css';
             const desc = move ? 'Go to move #' + move + ' at ' +  this.state.location[move-1] : 'Go to game start';
             return (
                 <li key={move}>
-                    <button onClick={()=> this.jumpTo(move)}>{desc}</button>
+                    <button onClick={()=> this.jumpTo(move)}>{move== this.state.stepNumber?<b>{desc}</b>:desc}</button>
                 </li>
             );
         }

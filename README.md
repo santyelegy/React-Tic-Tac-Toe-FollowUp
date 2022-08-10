@@ -5,6 +5,8 @@ Display the location for each move in the format (col, row) in the move history 
 finish
 ## T2
 Bold the currently selected item in the move list.
+
+finish
 ## T3
 Rewrite Board to use two loops to make the squares instead of hardcoding them.
 ## T4
