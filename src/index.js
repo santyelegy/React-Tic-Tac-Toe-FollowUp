@@ -3,12 +3,22 @@ import ReactDOM from "react-dom/client";
 import './index.css';
 
   function Square(props){
-    return(
+    if(props.win){
+      return(
+        <button className="winsquare" 
+        onClick={props.onClick}>
+          {props.value}
+        </button>
+    );
+    }else{
+      return(
         <button className="square" 
         onClick={props.onClick}>
           {props.value}
         </button>
     );
+    }
+    
   }
   function calculateWinner(squares){
     const lines=[
@@ -25,7 +35,7 @@ import './index.css';
         const [a,b,c] = lines[i];
         //square[a] is not null
         if(squares[a]&&squares[a]==squares[b]&&squares[a]==squares[c]){
-            return squares[a];
+            return [a,b,c];
         }
     }
     return null;
@@ -35,7 +45,8 @@ import './index.css';
     renderSquare(i) {
       return <Square 
                 value={this.props.squares[i]}
-                onClick={()=> this.props.onClick(i)}/>;
+                onClick={()=> this.props.onClick(i)}
+                win={this.props.win.includes(i)}/>;
     }
   
     render() {
@@ -106,7 +117,8 @@ import './index.css';
     render() {
         let history=this.state.history;
         const current=history[this.state.stepNumber];
-        const winner=calculateWinner(current.squares);
+        //winner Nodes
+        const winnerSquares=calculateWinner(current.squares);
         //map((element, index) => { /* … */ })
         //move is the index
         const moves=history.map((step,move)=>{
@@ -126,10 +138,12 @@ import './index.css';
         );
 
         let status;
-        if(winner){
-            status='Winner: '+ winner;
+        if(winnerSquares){
+            status='Winner: '+ current.squares[winnerSquares[0]];
+        }else if(history.length==10){
+            status="No One Win, Draw";
         }else{
-            status = 'Next player: '+ (this.state.xIsNext ? 'X':'O');
+          status = 'Next player: '+ (this.state.xIsNext ? 'X':'O');
         }
       return (
         <div className="game">
@@ -137,6 +151,7 @@ import './index.css';
             <Board 
             squares={current.squares}
             onClick={(i)=> this.handleClick(i)}
+            win={winnerSquares?winnerSquares:[]}
             />
           </div>
           <div className="game-info">

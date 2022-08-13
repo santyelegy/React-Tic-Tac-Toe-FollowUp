@@ -17,5 +17,9 @@ Add a toggle button that lets you sort the moves in either ascending or descendi
 finish
 ## T5
 When someone wins, highlight the three squares that caused the win.
+
+finish
 ## T6
 When no one wins, display a message about the result being a draw.
+
+finish
