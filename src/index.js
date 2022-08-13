@@ -39,23 +39,21 @@ import './index.css';
     }
   
     render() {
+      let count=0;
+      var rows=[];
+      for (let row=0;row<3;row++){
+          var columns=[];
+          for(let column=0;column<3;column++){
+              columns.push(this.renderSquare(count));
+              count++;
+          }
+          rows.push(<div className="board-row">
+            {columns}
+          </div>);
+        }
       return (
         <div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
+          {rows}
         </div>
       );
     }
@@ -67,15 +65,16 @@ import './index.css';
         this.state={
             history: [{
                 squares: Array(9).fill(null),
+                location: Array(1).fill(null),
             }],
-            location: [],
+            
             stepNumber: 0,
             xIsNext:true,
+            reverseDisplay:false,
         };
     }
     handleClick(i){
         const history=this.state.history.slice(0,this.state.stepNumber+1);
-        const location=this.state.location.slice(0,this.state.stepNumber);
         const current=history[history.length-1];
         const squares=current.squares.slice();
         if(calculateWinner(squares)||squares[i]){
@@ -86,8 +85,9 @@ import './index.css';
             history: history.concat([
                 {
                     squares: squares,
+                    location: current.location.concat([i]),
                 }]),
-            location: location.concat([i]),
+            
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
         });
@@ -98,14 +98,25 @@ import './index.css';
         xIsNext: (step%2)===0,
       });
     }
+    changeReverse(){
+      this.setState({
+        reverseDisplay: !this.state.reverseDisplay,
+      });
+    }
     render() {
-        const history= this.state.history;
+        let history=this.state.history;
         const current=history[this.state.stepNumber];
         const winner=calculateWinner(current.squares);
         //map((element, index) => { /* … */ })
         //move is the index
         const moves=history.map((step,move)=>{
-            const desc = move ? 'Go to move #' + move + ' at ' +  this.state.location[move-1] : 'Go to game start';
+            let y=0;
+            let x=0;
+            if(step.location[move]!=null){
+              y=step.location[move]%3;
+              x=(step.location[move]-y)/3;
+            }        
+            const desc = move ? 'Go to move #' + move + ' at (' + x+','+y+')'  : 'Go to game start';
             return (
                 <li key={move}>
                     <button onClick={()=> this.jumpTo(move)}>{move== this.state.stepNumber?<b>{desc}</b>:desc}</button>
@@ -130,7 +141,8 @@ import './index.css';
           </div>
           <div className="game-info">
             <div>{status}</div>
-            <ol>{moves}</ol>
+            <ol>{this.state.reverseDisplay?moves.reverse():moves}</ol>
+          <button onClick={()=>this.changeReverse()}>Reverse display</button>
           </div>
         </div>
       );
